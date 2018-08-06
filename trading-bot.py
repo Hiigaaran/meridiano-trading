@@ -21,12 +21,12 @@ def main(argv):
 		opts, args = getopt.getopt(argv,"hp:c:n:s:e:",["period=","currency=","points="])
 
 	except getopt.GetoptError:
-		print 'trading-bot.py -p <period length> -c <currency pair> -n <period of moving average>'
+		print ('trading-bot.py -p <period length> -c <currency pair> -n <period of moving average>')
 		sys.exit(2)
 
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'trading-bot.py -p <period length> -c <currency pair> -n <period of moving average>'
+			print ('trading-bot.py -p <period length> -c <currency pair> -n <period of moving average>')
 			sys.exit()
 
 		elif opt in ("-p", "--period"):
@@ -34,7 +34,7 @@ def main(argv):
 				period = arg
 
 			else:
-				print 'Poloniex requires periods in 300,900,1800,7200,14400, or 86400 second increments'
+				print ('Poloniex requires periods in 300,900,1800,7200,14400, or 86400 second increments')
 				sys.exit(2)
 
 		elif opt in ("-c", "--currency"):
@@ -65,36 +65,36 @@ def main(argv):
 
 		else:
 			currentValues = conn.api_query("returnTicker")
-			lastPairPrice = currentValues[pair]["last"]
+			lastPairPrice = float(currentValues[pair]["last"])
 			dataDate = datetime.datetime.now()
 
 		if (len(prices) > 0):
-			currentMovingAverage = sum(prices) / float(len(prices))
+			currentMovingAverage = (sum(prices) / float(len(prices)))
 			previousPrice = prices[-1]
 
 			if (not tradePlaced):
 				if ( (lastPairPrice > currentMovingAverage) and (lastPairPrice < previousPrice) ):
-					print "SELL ORDER"
+					print ("SELL ORDER")
 					orderNumber = conn.sell(pair,lastPairPrice,.01)
 					tradePlaced = True
 					typeOfTrade = "short"
 
 				elif ( (lastPairPrice < currentMovingAverage) and (lastPairPrice > previousPrice) ):
-					print "BUY ORDER"
+					print ("BUY ORDER")
 					orderNumber = conn.buy(pair,lastPairPrice,.01)
 					tradePlaced = True
 					typeOfTrade = "long"
 
 			elif (typeOfTrade == "short"):
 				if ( lastPairPrice < currentMovingAverage ):
-					print "EXIT TRADE"
+					print ("EXIT TRADE")
 					conn.cancel(pair,orderNumber)
 					tradePlaced = False
 					typeOfTrade = False
 
 			elif (typeOfTrade == "long"):
 				if ( lastPairPrice > currentMovingAverage ):
-					print "EXIT TRADE"
+					print ("EXIT TRADE")
 					conn.cancel(pair,orderNumber)
 					tradePlaced = False
 					typeOfTrade = False
@@ -102,7 +102,7 @@ def main(argv):
 		else:
 			previousPrice = 0
 
-		print "%s Period: %ss %s: %s Moving Average: %s" % (dataDate,period,pair,lastPairPrice,currentMovingAverage)
+		print(("%s Period: %ss %s: %s Moving Average: %s" % (dataDate,period,pair,lastPairPrice,currentMovingAverage)))
 
 		prices.append(float(lastPairPrice))
 		prices = prices[-lengthOfMA:]
