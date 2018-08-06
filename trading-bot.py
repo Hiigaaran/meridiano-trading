@@ -65,11 +65,11 @@ def main(argv):
 
 		else:
 			currentValues = conn.api_query("returnTicker")
-			lastPairPrice = currentValues[pair]["last"]
+			lastPairPrice = float(currentValues[pair]["last"])
 			dataDate = datetime.datetime.now()
 
 		if (len(prices) > 0):
-			currentMovingAverage = sum(prices) / float(len(prices))
+			currentMovingAverage = (sum(prices) / float(len(prices)))
 			previousPrice = prices[-1]
 
 			if (not tradePlaced):
@@ -102,7 +102,7 @@ def main(argv):
 		else:
 			previousPrice = 0
 
-		print ("%s Period: %ss %s: %s Moving Average: %s" % (dataDate,period,pair,lastPairPrice,currentMovingAverage))
+		print(("%s Period: %ss %s: %s Moving Average: %s" % (dataDate,period,pair,lastPairPrice,currentMovingAverage)))
 
 		prices.append(float(lastPairPrice))
 		prices = prices[-lengthOfMA:]
